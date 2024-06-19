@@ -1,15 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import {
-  BehaviorSubject,
-  Observable,
-  catchError,
-  finalize,
-  map,
-  share,
-  tap,
-  throwError,
-} from 'rxjs';
+import { Observable, finalize, map, share, tap } from 'rxjs';
 import { environment } from 'src/app/environments/env.const';
 import { LoginResponse } from './model/login.interface';
 import { RegistrationResponse } from './model/registration.interface';
@@ -25,8 +16,14 @@ export class AuthService {
   private router = inject(Router);
   private _token$: Observable<void> | null = null;
   private readonly tokenNames = TokenNames;
+  private jwtToken!: string | null;
+  private refreshToken!: string | null;
   protected loggedUser?: string | null;
-  protected refreshToken!: string;
+
+  constructor() {
+    this.jwtToken = localStorage.getItem(this.tokenNames.JWT_TOKEN);
+    this.refreshToken = localStorage.getItem(this.tokenNames.REFRESH_TOKEN);
+  }
 
   public get getRefreshToken$(): Observable<void> {
     if (!this._token$) {
@@ -35,7 +32,9 @@ export class AuthService {
         finalize(() => {
           this._token$ = null;
         }),
-        map(() => {}),
+        map((response) => {
+          this.jwtToken = response.jwtToken;
+        }),
       );
     }
 
@@ -43,7 +42,11 @@ export class AuthService {
   }
 
   public get _authToken(): string {
-    return localStorage.getItem(this.tokenNames.REFRESH_TOKEN)!;
+    return this.refreshToken || '';
+  }
+
+  public get _jwtToken(): string {
+    return this.jwtToken || '';
   }
 
   public login(data: LoginResponse): Observable<boolean> {
@@ -59,7 +62,7 @@ export class AuthService {
   }
 
   public isLoggedIn() {
-    return !!this.getJwtToken();
+    return !!this._jwtToken;
   }
 
   public registration(
@@ -82,7 +85,7 @@ export class AuthService {
   }
 
   public getJwtToken() {
-    return localStorage.getItem(this.tokenNames.JWT_TOKEN);
+    return this.jwtToken;
   }
 
   public doLogoutUser() {
@@ -103,7 +106,16 @@ export class AuthService {
       );
   }
 
+  public removeTokens() {
+    this.jwtToken = null;
+    this.refreshToken = null;
+    localStorage.removeItem(this.tokenNames.JWT_TOKEN);
+    localStorage.removeItem(this.tokenNames.REFRESH_TOKEN);
+  }
+
   private storeTokens(tokens: any) {
+    this.jwtToken = tokens.jwtToken;
+    this.refreshToken = tokens.refreshToken;
     localStorage.setItem(this.tokenNames.JWT_TOKEN, tokens.jwtToken);
     localStorage.setItem(this.tokenNames.REFRESH_TOKEN, tokens.refreshToken);
   }
@@ -111,10 +123,5 @@ export class AuthService {
   private doLoginUser(email?: string, tokens?: any) {
     this.loggedUser = email;
     this.storeTokens(tokens);
-  }
-
-  private removeTokens() {
-    localStorage.removeItem(this.tokenNames.JWT_TOKEN);
-    localStorage.removeItem(this.tokenNames.REFRESH_TOKEN);
   }
 }

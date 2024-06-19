@@ -10,7 +10,10 @@ import {
   BehaviorSubject,
   Observable,
   catchError,
+  filter,
   switchMap,
+  take,
+  tap,
   throwError,
 } from 'rxjs';
 import { AuthService } from '../services/auth/auth.service';
@@ -20,9 +23,7 @@ import { environment } from '../environments/env.const';
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
   private authService = inject(AuthService);
-  private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(
-    null,
-  );
+  private tokenUsed: boolean = false;
 
   intercept(
     request: HttpRequest<unknown>,
@@ -32,10 +33,8 @@ export class TokenInterceptor implements HttpInterceptor {
       return next.handle(request);
     }
 
-    const accessToken = this.authService.getJwtToken();
-    if (accessToken) {
-      request = this.addToken(request, accessToken);
-    }
+    const accessToken = this.authService._authToken;
+    request = this.addToken(request, accessToken);
 
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
@@ -55,12 +54,10 @@ export class TokenInterceptor implements HttpInterceptor {
   }
 
   private handle401Error(request: HttpRequest<any>, next: HttpHandler) {
-    this.refreshTokenSubject.next(null);
     return this.authService.getRefreshToken$.pipe(
       switchMap(() => {
         const accessToken = this.authService.getJwtToken();
         if (accessToken) {
-          this.refreshTokenSubject.next(accessToken);
           return next.handle(this.addToken(request, accessToken));
         }
 
