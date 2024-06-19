@@ -19,6 +19,8 @@ import { FormStatusService } from 'src/app/services/form/form-status.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { UsersResponse } from 'src/app/services/users/model/users.interface';
 import { UsersService } from 'src/app/services/users/users.service';
+import { ConfirmDialogService } from 'src/app/shared/dialogs/confirm-dialog/confirm-dialog.service';
+import { marker as _ } from '@jsverse/transloco-keys-manager/marker';
 
 @Component({
   selector: 'app-account',
@@ -41,15 +43,18 @@ export class AccountComponent implements OnInit {
   private formStatusService = inject(FormStatusService);
   private formBuilder = inject(FormBuilder);
   private usersService = inject(UsersService);
-  protected loaderService = inject(LoaderService);
+  private loaderService = inject(LoaderService);
+  private confirmDialogService = inject(ConfirmDialogService);
   protected userDataResponse!: UsersResponse;
+  protected currentUser$ = this.usersService.currentUser$;
 
   protected profileForm!: FormGroup;
   protected editMode!: boolean;
 
-  protected userData$: Observable<UsersResponse> = this.usersService
-    .getCurrentUser()
-    .pipe(finalize(() => this.loaderService.setLoading(false)));
+  protected userData$: Observable<UsersResponse | null> =
+    this.currentUser$.pipe(
+      finalize(() => this.loaderService.setLoading(false)),
+    );
 
   ngOnInit() {
     this.profileForm = this.formBuilder.group({
@@ -62,6 +67,16 @@ export class AccountComponent implements OnInit {
   }
 
   protected onFormChange(isEdited: boolean): void {
+    if (!isEdited) {
+      this.confirmDialogService
+        .open({
+          title: _('editUser.savingData.title'),
+          content: _('editUser.savingData.subtitle'),
+          buttonText: _('dialog.button.close'),
+        })
+        .subscribe();
+    }
+
     this.formStatusService.setFormEdited(isEdited);
   }
 

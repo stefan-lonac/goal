@@ -16,6 +16,7 @@ import { AuthService } from 'src/app/services/auth/auth.service';
 import { MatMenuModule } from '@angular/material/menu';
 import { LogoutDialogService } from '../../dialogs/logout-dialog/logout-dialog.service';
 import { filter, tap } from 'rxjs';
+import { UsersService } from 'src/app/services/users/users.service';
 
 @Component({
   selector: 'app-header',
@@ -36,8 +37,10 @@ import { filter, tap } from 'rxjs';
 })
 export class HeaderComponent {
   private translocoService = inject(TranslocoService);
-  private authService = inject(AuthService);
   private logoutDialogService = inject(LogoutDialogService);
+  private usersService = inject(UsersService);
+  public authService = inject(AuthService);
+  protected currentUser$ = this.usersService.currentUser$;
 
   protected isLoggedIn = this.authService.isLoggedIn();
   readonly appRoutes = ApplicationRoutes;
