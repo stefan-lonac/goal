@@ -38,6 +38,10 @@
         </button>
         <mat-menu #menu="matMenu">
           <div class="panel-controls">
+            <ng-container *ngIf="currentUser$ | async as user">
+              {{ user.name }}
+            </ng-container>
+
             <button mat-flat-button [routerLink]="appRoutes.Account">
               {{ "common.profile" | transloco }}
             </button>

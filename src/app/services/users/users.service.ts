@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, map, switchMap } from 'rxjs';
+import { BehaviorSubject, Observable, map, switchMap, tap } from 'rxjs';
 import { environment } from 'src/app/environments/env.const';
 import { UsersResponse } from './model/users.interface';
 import { UpdateUserResponse } from './model/update-user.interface';
@@ -10,8 +10,15 @@ import { UpdateUserResponse } from './model/update-user.interface';
 })
 export class UsersService {
   private _http = inject(HttpClient);
+  private _currentUser$ = new BehaviorSubject<UsersResponse | null>(null);
+  private _isUserCached = false;
 
-  constructor() {}
+  get currentUser$(): Observable<UsersResponse | null> {
+    if (!this._isUserCached) {
+      this.getCurrentUser().subscribe();
+    }
+    return this._currentUser$.asObservable();
+  }
 
   public getUsers(): Observable<UsersResponse[]> {
     const usersUrl = `${environment.apiBaseUrl}User/getAll`;
@@ -24,9 +31,13 @@ export class UsersService {
 
   public getCurrentUser(): Observable<UsersResponse> {
     const getCurrentUserUrl = `${environment.apiBaseUrl}User/getCurrent`;
-    return this._http
-      .get(getCurrentUserUrl)
-      .pipe(map((response) => response as UsersResponse));
+    return this._http.get(getCurrentUserUrl).pipe(
+      tap((user) => {
+        this._currentUser$.next(user as UsersResponse);
+        this._isUserCached = true;
+      }),
+      map((response) => response as UsersResponse),
+    );
   }
 
   public updateCurrentUser(

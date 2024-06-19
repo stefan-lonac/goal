@@ -1,12 +1,14 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, finalize, map, share, tap } from 'rxjs';
+import { BehaviorSubject, Observable, finalize, map, share, tap } from 'rxjs';
 import { environment } from 'src/app/environments/env.const';
 import { LoginResponse } from './model/login.interface';
 import { RegistrationResponse } from './model/registration.interface';
 import { Router } from '@angular/router';
 import { TokenNames } from './const/token.const';
 import { TokenResponse } from './model/token-response.interface';
+import { UsersResponse } from '../users/model/users.interface';
+import { UsersService } from '../users/users.service';
 
 @Injectable({
   providedIn: 'root',

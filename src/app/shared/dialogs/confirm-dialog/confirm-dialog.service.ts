@@ -10,9 +10,7 @@ import { ConfirmDialogComponent } from './confirm-dialog.component';
 export class ConfirmDialogService {
   constructor(private dialog: MatDialog) {}
 
-  public open(
-    data: ConfirmationDialogDataModel,
-  ): Observable<ConfirmationDialogDataModel | undefined> {
+  public open(data: ConfirmationDialogDataModel): Observable<boolean> {
     const dialog = this.dialog.open<
       ConfirmDialogComponent,
       ConfirmationDialogDataModel

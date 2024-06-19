@@ -8,12 +8,12 @@ export class FormStatusService {
   private formStatus = new Subject<boolean>();
   private isFormEdited = true;
 
-  setFormEdited(status: boolean): void {
-    this.isFormEdited = status;
-    this.formStatus.next(this.isFormEdited);
+  public get getFormEdited(): boolean {
+    return this.isFormEdited;
   }
 
-  getFormEdited(): boolean {
-    return this.isFormEdited;
+  public setFormEdited(status: boolean): void {
+    this.isFormEdited = status;
+    this.formStatus.next(this.isFormEdited);
   }
 }
