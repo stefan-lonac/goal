@@ -1,1 +1,15 @@
-/* You can add global styles to this file, and also import other style files */
+@use "@angular/material" as mat;
+// @use "themes" as t;
+@use "scss/components/buttons";
+@use "scss/components/select-list";
+@use "scss/themes/global-styles/global-classes";
+@use "scss/themes/theme";
+
+body {
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+  font-family: Inter, "Helvetica Neue", sans-serif;
+}

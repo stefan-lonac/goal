@@ -1,0 +1,21 @@
+<h1 mat-dialog-title>{{ "logout.dialog.title" | transloco }}</h1>
+<div mat-dialog-content>{{ "logout.dialog.subtitle" | transloco }}</div>
+
+<div mat-dialog-actions>
+  <button
+    class="app-button"
+    mat-stroked-button
+    color="primary"
+    [mat-dialog-close]="false"
+  >
+    {{ "dialog.button.close" | transloco }}
+  </button>
+  <button
+    mat-flat-button
+    class="app-button"
+    color="primary"
+    [mat-dialog-close]="true"
+  >
+    {{ "common.canfirm" | transloco }}
+  </button>
+</div>

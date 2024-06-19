@@ -1,0 +1,82 @@
+<ng-container *ngIf="userData$ | async as data; else loader">
+  <form
+    [formGroup]="profileForm"
+    (ngSubmit)="onSave(data)"
+    (change)="onInputChange()"
+  >
+    <mat-card class="box-shadow">
+      <mat-card-content>
+        <div class="user-profile-card">
+          <h3>{{ "common.name" | transloco }}:</h3>
+          <div>
+            <ng-container *ngIf="editMode">
+              <mat-form-field>
+                <mat-label>{{ "common.name" | transloco }}</mat-label>
+                <input matInput formControlName="name" />
+              </mat-form-field>
+            </ng-container>
+
+            <p *ngIf="!editMode">
+              {{ data?.name }}
+            </p>
+          </div>
+        </div>
+        <hr />
+
+        <div class="user-profile-card">
+          <h3>{{ "common.email" | transloco }}:</h3>
+          <div>
+            <ng-container *ngIf="editMode">
+              <mat-form-field>
+                <mat-label>{{ "common.email" | transloco }}</mat-label>
+                <input matInput formControlName="email" />
+              </mat-form-field>
+            </ng-container>
+
+            <p *ngIf="!editMode">
+              {{ data?.email }}
+            </p>
+          </div>
+        </div>
+        <hr />
+      </mat-card-content>
+    </mat-card>
+
+    <div class="controls-btn">
+      <div class="edit-save-buttons">
+        <button
+          *ngIf="!editMode"
+          mat-raised-button
+          color="primary"
+          (click)="onEditMode()"
+        >
+          {{ "common.edit" | transloco }}
+        </button>
+
+        <button
+          class="app-button"
+          mat-raised-button
+          color="primary"
+          type="submit"
+          *ngIf="editMode"
+          [disabled]="profileForm.invalid"
+        >
+          {{ "common.save" | transloco }}
+        </button>
+
+        <button
+          *ngIf="editMode"
+          mat-raised-button
+          color="warn"
+          (click)="cancelEdit()"
+        >
+          {{ "common.cancel" | transloco }}
+        </button>
+      </div>
+    </div>
+  </form>
+</ng-container>
+
+<ng-template #loader>
+  <mat-spinner></mat-spinner>
+</ng-template>

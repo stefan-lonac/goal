@@ -1,0 +1,55 @@
+<div class="login box-shadow">
+  <h1>{{ "common.button.login" | transloco }}</h1>
+  <form class="login-form" [formGroup]="loginForm" (ngSubmit)="login()">
+    <mat-form-field>
+      <mat-label>{{ "common.email" | transloco }}</mat-label>
+      <input
+        matInput
+        type="email"
+        placeholder="Enter your email"
+        formControlName="email"
+      />
+
+      <mat-error *ngIf="loginForm.get('email')!.hasError('required')">
+        {{ "common.required.email" | transloco }}
+      </mat-error>
+
+      <mat-error *ngIf="loginForm.get('email')!.hasError('email')">
+        {{ "common.validation.notValidEmail" | transloco }}
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>{{ "common.password" | transloco }}</mat-label>
+      <input
+        matInput
+        type="password"
+        placeholder="Enter your password"
+        formControlName="password"
+      />
+
+      <mat-error *ngIf="loginForm.get('password')!.hasError('required')">
+        {{ "common.required.password" | transloco }}
+      </mat-error>
+    </mat-form-field>
+
+    <button
+      class="app-button"
+      mat-button
+      mat-stroked-button
+      color="primary"
+      type="submit"
+      [disabled]="loginForm.invalid"
+    >
+      {{ "common.button.login" | transloco }}
+    </button>
+  </form>
+
+  <a [routerLink]="'/' + appRoutes.Registration">{{
+    "registration.title" | transloco
+  }}</a>
+
+  <ng-template *ngIf="loaderService.loading$ | async">
+    <mat-spinner></mat-spinner>
+  </ng-template>
+</div>

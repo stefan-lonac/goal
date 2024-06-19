@@ -1,0 +1,8 @@
+mat-form-field {
+  &.mat-mdc-form-field-type-mat-select {
+    .mat-mdc-form-field-subscript-wrapper {
+      line-height: 0;
+      height: 0;
+    }
+  }
+}

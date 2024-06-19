@@ -1,0 +1,10 @@
+:host {
+  .header-container {
+    mat-card {
+      justify-content: space-between;
+      align-items: center;
+      flex-direction: row;
+      padding: 15px;
+    }
+  }
+}

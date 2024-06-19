@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>
+  {{ "userView.dialog.title" | transloco }} <strong>{{ data.name }}</strong>
+</h1>
+<div mat-dialog-content>
+  <ul>
+    <li>{{ "userView.dialog.userID" | transloco }} {{ data.id }}</li>
+    <li>{{ "userView.dialog.userEmail" | transloco }} {{ data.email }}</li>
+  </ul>
+
+  <div mat-dialog-actions>
+    <button
+      class="app-button"
+      mat-stroked-button
+      color="primary"
+      [mat-dialog-close]="false"
+    >
+      {{ "dialog.button.close" | transloco }}
+    </button>
+  </div>
+</div>

@@ -1,0 +1,59 @@
+<ng-container *ngIf="users$ | async as users; else loader">
+  <div class="users-container">
+    <table mat-table [dataSource]="users" class="mat-elevation-z8">
+      <ng-container matColumnDef="position">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ "common.table.column.num" | transloco }}.
+        </th>
+        <td mat-cell *matCellDef="let element; let position = index">
+          {{ position }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ "common.table.column.name" | transloco }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ "common.table.column.email" | transloco }}
+        </th>
+        <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="accountConfirmed">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ "common.table.column.accountConfirmed" | transloco }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ element.accountConfirmed ? "Yes" : "No" }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="controls">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ "common.table.column.controls" | transloco }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <button
+            mat-flat-button
+            color="primary"
+            (click)="viewUser(element.id)"
+          >
+            {{ "common.view" | transloco }}
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+</ng-container>
+
+<ng-template #loader>
+  <mat-spinner></mat-spinner>
+</ng-template>

@@ -1,0 +1,14 @@
+<h1 mat-dialog-title>{{ data.title | transloco }}</h1>
+<div mat-dialog-content>
+  {{ data.content | transloco }}
+</div>
+<div mat-dialog-actions>
+  <button
+    class="app-button"
+    mat-stroked-button
+    color="primary"
+    (click)="close()"
+  >
+    {{ data.buttonText | transloco }}
+  </button>
+</div>

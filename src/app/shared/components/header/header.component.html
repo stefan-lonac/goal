@@ -1,0 +1,63 @@
+<div class="header-container box-shadow">
+  <mat-card>
+    <div class="header-navigation">
+      <a
+        [routerLink]="appRoutes.Home"
+        routerLinkActive="active"
+        mat-button
+        color="primary"
+      >
+        {{ "common.home" | transloco }}
+      </a>
+
+      <a
+        routerLinkActive="active"
+        mat-button
+        color="primary"
+        [routerLink]="appRoutes.Users"
+        routerLinkActive="active"
+      >
+        {{ "common.users" | transloco }}
+      </a>
+
+      <a
+        *ngIf="!isLoggedIn"
+        routerLinkActive="active"
+        mat-button
+        color="primary"
+        [routerLink]="appRoutes.Login"
+      >
+        {{ "common.button.login" | transloco }}
+      </a>
+    </div>
+
+    <div class="header-controls">
+      <ng-container *ngIf="isLoggedIn">
+        <button mat-button [matMenuTriggerFor]="menu">
+          {{ "common.account" | transloco }}
+        </button>
+        <mat-menu #menu="matMenu">
+          <div class="panel-controls">
+            <button mat-flat-button [routerLink]="appRoutes.Account">
+              {{ "common.profile" | transloco }}
+            </button>
+            <button mat-flat-button color="warn" (click)="logOut()">
+              {{ "common.logout" | transloco }}
+            </button>
+          </div>
+        </mat-menu>
+      </ng-container>
+
+      <mat-form-field>
+        <mat-select
+          [ngModel]="activeLanguage"
+          (ngModelChange)="changeLanguage($event)"
+        >
+          <mat-option *ngFor="let lang of languages" [value]="lang">{{
+            lang
+          }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </mat-card>
+</div>
