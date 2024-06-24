@@ -1,16 +1,16 @@
-import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UsersService } from 'src/app/services/users/users.service';
-import { MatTableModule } from '@angular/material/table';
+import { Component, OnInit, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { TranslocoModule } from '@jsverse/transloco';
-import { ViewUserDialogService } from './dialog/view-user-dialog.service';
-import { ViewUserDialogComponent } from './dialog/view-user-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
-import { Observable, filter, finalize, switchMap } from 'rxjs';
-import { UsersResponse } from 'src/app/services/users/model/users.interface';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
+import { TranslocoModule } from '@jsverse/transloco';
+import { Observable, finalize, switchMap } from 'rxjs';
 import { LoaderService } from 'src/app/services/loader/loader.service';
+import { UsersResponse } from 'src/app/services/users/model/users.interface';
+import { UsersService } from 'src/app/services/users/users.service';
+import { ViewUserDialogComponent } from './dialog/view-user-dialog.component';
+import { ViewUserDialogService } from './dialog/view-user-dialog.service';
 
 @Component({
   selector: 'app-users',
