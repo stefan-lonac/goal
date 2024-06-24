@@ -1,14 +1,12 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, finalize, map, share, tap } from 'rxjs';
 import { environment } from 'src/app/environments/env.const';
+import { TokenNames } from './const/token.const';
 import { LoginResponse } from './model/login.interface';
 import { RegistrationResponse } from './model/registration.interface';
-import { Router } from '@angular/router';
-import { TokenNames } from './const/token.const';
 import { TokenResponse } from './model/token-response.interface';
-import { UsersResponse } from '../users/model/users.interface';
-import { UsersService } from '../users/users.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,11 +18,16 @@ export class AuthService {
   private readonly tokenNames = TokenNames;
   private jwtToken!: string | null;
   private refreshToken!: string | null;
+  private loggedIn = new BehaviorSubject<boolean>(this.hasToken());
+
   protected loggedUser?: string | null;
 
   constructor() {
-    this.jwtToken = localStorage.getItem(this.tokenNames.JWT_TOKEN);
-    this.refreshToken = localStorage.getItem(this.tokenNames.REFRESH_TOKEN);
+    this.loadTokenData();
+  }
+
+  public get isLoggedIn() {
+    return this.loggedIn.asObservable();
   }
 
   public get getRefreshToken$(): Observable<void> {
@@ -51,20 +54,22 @@ export class AuthService {
     return this.jwtToken || '';
   }
 
+  public hasToken(): boolean {
+    return !!this._jwtToken;
+  }
+
   public login(data: LoginResponse): Observable<boolean> {
     const loginURL = `${environment.apiBaseUrl}Login/login`;
-    return this._http
-      .post<any>(loginURL, data)
-      .pipe(tap((tokens) => this.doLoginUser(data.email, tokens)));
+    return this._http.post<any>(loginURL, data).pipe(
+      tap((tokens) => {
+        this.loggedIn.next(true);
+        this.doLoginUser(tokens);
+      }),
+    );
   }
 
   public logout(): void {
-    this.loggedUser = null;
     this.doLogoutUser();
-  }
-
-  public isLoggedIn() {
-    return !!this._jwtToken;
   }
 
   public registration(
@@ -91,7 +96,7 @@ export class AuthService {
   }
 
   public doLogoutUser() {
-    this.loggedUser = null;
+    this.loggedIn.next(false);
     this.removeTokens();
     this.router.navigate(['/login']);
   }
@@ -115,6 +120,16 @@ export class AuthService {
     localStorage.removeItem(this.tokenNames.REFRESH_TOKEN);
   }
 
+  private updateLoggedInStatus(): void {
+    this.loggedIn.next(this.hasToken());
+  }
+
+  private loadTokenData(): void {
+    this.jwtToken = localStorage.getItem(this.tokenNames.JWT_TOKEN);
+    this.refreshToken = localStorage.getItem(this.tokenNames.REFRESH_TOKEN);
+    this.updateLoggedInStatus();
+  }
+
   private storeTokens(tokens: any) {
     this.jwtToken = tokens.jwtToken;
     this.refreshToken = tokens.refreshToken;
@@ -122,8 +137,7 @@ export class AuthService {
     localStorage.setItem(this.tokenNames.REFRESH_TOKEN, tokens.refreshToken);
   }
 
-  private doLoginUser(email?: string, tokens?: any) {
-    this.loggedUser = email;
+  private doLoginUser(tokens?: any) {
     this.storeTokens(tokens);
   }
 }

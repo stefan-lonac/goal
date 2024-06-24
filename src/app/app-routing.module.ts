@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { ApplicationRoutes } from './const/application-routes';
 import { isLoggedInGuard } from './services/guards/is-logged-in.guard';
 import { CanDeactivateEditGuardFn } from './services/guards/can-deactivate-edit.guard';
+import { isNotLoggedInGuard } from './services/guards/is-not-logged-in.guard.guard';
 
 const routes: Routes = [
   {
@@ -12,12 +13,14 @@ const routes: Routes = [
         (c) => c.HomePageComponent,
       ),
     canActivate: [isLoggedInGuard],
+    data: { showHeader: true },
   },
   {
     path: `${ApplicationRoutes.Users}`,
     loadComponent: () =>
       import('./pages/users/users.component').then((c) => c.UsersComponent),
     canActivate: [isLoggedInGuard],
+    data: { showHeader: true },
   },
   {
     path: `${ApplicationRoutes.Account}`,
@@ -27,6 +30,7 @@ const routes: Routes = [
       ),
     canActivate: [isLoggedInGuard],
     canDeactivate: [CanDeactivateEditGuardFn],
+    data: { showHeader: true },
   },
   {
     path: `${ApplicationRoutes.Login}`,
@@ -34,6 +38,8 @@ const routes: Routes = [
       import('./pages/user/login/login.component').then(
         (c) => c.LoginComponent,
       ),
+    canActivate: [isNotLoggedInGuard],
+    data: { showHeader: false },
   },
   {
     path: `${ApplicationRoutes.Registration}`,
@@ -41,6 +47,8 @@ const routes: Routes = [
       import('./pages/user/registration/registration.component').then(
         (c) => c.RegistrationComponent,
       ),
+    canActivate: [isNotLoggedInGuard],
+    data: { showHeader: false },
   },
   { path: '**', redirectTo: '', pathMatch: 'full' },
 ];
