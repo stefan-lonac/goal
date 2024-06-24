@@ -19,7 +19,6 @@ import { FormStatusService } from 'src/app/services/form/form-status.service';
 import { LoaderService } from 'src/app/services/loader/loader.service';
 import { UsersResponse } from 'src/app/services/users/model/users.interface';
 import { UsersService } from 'src/app/services/users/users.service';
-import { ConfirmDialogService } from 'src/app/shared/dialogs/confirm-dialog/confirm-dialog.service';
 import { marker as _ } from '@jsverse/transloco-keys-manager/marker';
 
 @Component({
@@ -44,7 +43,6 @@ export class AccountComponent implements OnInit {
   private formBuilder = inject(FormBuilder);
   private usersService = inject(UsersService);
   private loaderService = inject(LoaderService);
-  private confirmDialogService = inject(ConfirmDialogService);
   protected userDataResponse!: UsersResponse;
   protected currentUser$ = this.usersService.currentUser$;
 
@@ -67,16 +65,6 @@ export class AccountComponent implements OnInit {
   }
 
   protected onFormChange(isEdited: boolean): void {
-    if (!isEdited) {
-      this.confirmDialogService
-        .open({
-          title: _('editUser.savingData.title'),
-          content: _('editUser.savingData.subtitle'),
-          buttonText: _('dialog.button.close'),
-        })
-        .subscribe();
-    }
-
     this.formStatusService.setFormEdited(isEdited);
   }
 

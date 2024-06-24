@@ -1,30 +1,23 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { Observable, filter, map } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
-import { ApplicationRoutes } from './const/application-routes';
-import { UsersService } from './services/users/users.service';
+import { RouteDataService } from './services/route-data/route-data.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   private router = inject(Router);
-
+  private routeDataService = inject(RouteDataService);
+  protected showHeader$!: Observable<boolean>;
   protected title = 'goal';
-  protected isLogin = false;
-  protected isRegistration = false;
 
-  public get showHeader(): boolean {
-    return !this.isLogin && !this.isRegistration;
-  }
-
-  constructor() {
-    this.router.events.subscribe((val) => {
-      if (val instanceof NavigationEnd) {
-        this.isLogin = val.url === `/${ApplicationRoutes.Login}`;
-        this.isRegistration = val.url === `/${ApplicationRoutes.Registration}`;
-      }
-    });
+  ngOnInit() {
+    this.showHeader$ = this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd),
+      map(() => this.routeDataService.getRouteData()['showHeader'] !== false),
+    );
   }
 }

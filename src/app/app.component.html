@@ -1,7 +1,7 @@
-<header *ngIf="showHeader">
+<header *ngIf="showHeader$ | async">
   <app-header></app-header>
 </header>
 
-<main [class.m-auto]="!showHeader">
+<main [ngClass]="{ 'm-auto': !(showHeader$ | async) }">
   <router-outlet></router-outlet>
 </main>

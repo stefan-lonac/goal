@@ -42,7 +42,7 @@ export class HeaderComponent {
   public authService = inject(AuthService);
   protected currentUser$ = this.usersService.currentUser$;
 
-  protected isLoggedIn = this.authService.isLoggedIn();
+  protected isLoggedIn = this.authService.isLoggedIn;
   readonly appRoutes = ApplicationRoutes;
 
   protected get activeLanguage(): string {
