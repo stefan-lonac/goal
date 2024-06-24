@@ -1,10 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { Users } from '../models/user.model';
-import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
-import { UsersResponse } from 'src/app/services/users/model/users.interface';
-import { TranslocoModule } from '@jsverse/transloco';
 import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { TranslocoModule } from '@jsverse/transloco';
+import { UsersResponse } from 'src/app/services/users/model/users.interface';
 
 @Component({
   selector: 'app-view-user-dialog',

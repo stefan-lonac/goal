@@ -19,7 +19,6 @@ import {
 import { AuthService } from '../services/auth/auth.service';
 
 import { environment } from '../environments/env.const';
-import { TokenResponse } from '../services/auth/model/token-response.interface';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
@@ -55,7 +54,6 @@ export class TokenInterceptor implements HttpInterceptor {
           this.authService.logout();
         }
 
-        console.log('Nije 401');
         return throwError(() => {
           return error;
         });
