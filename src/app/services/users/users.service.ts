@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, Observable, map, tap } from 'rxjs';
+import { BehaviorSubject, Observable, map, switchMap, tap } from 'rxjs';
 import { environment } from 'src/app/environments/env.const';
 import { AuthService } from '../auth/auth.service';
 import { UpdateUserResponse } from './model/update-user.interface';
@@ -32,21 +32,19 @@ export class UsersService {
 
   public getCurrentUser(): Observable<UsersResponse> {
     const getCurrentUserUrl = `${environment.apiBaseUrl}User/getCurrent`;
-    return this._http.get(getCurrentUserUrl).pipe(
-      tap((user) => {
-        this._currentUser$.next(user as UsersResponse);
-      }),
-      map((response) => response as UsersResponse),
-    );
+    return this._http
+      .get<UsersResponse>(getCurrentUserUrl)
+      .pipe(tap((user) => this._currentUser$.next(user)));
   }
 
   public updateCurrentUser(
     udpateUserData: UpdateUserResponse,
   ): Observable<Object> {
     const updateCurrentUserUrl = `${environment.apiBaseUrl}User`;
-    return this._http
-      .put(updateCurrentUserUrl, udpateUserData)
-      .pipe(map((response) => response));
+    return this._http.put(updateCurrentUserUrl, udpateUserData).pipe(
+      switchMap(() => this.getCurrentUser()),
+      tap((updateUser) => this._currentUser$.next(updateUser as UsersResponse)),
+    );
   }
 
   public getUserByID(id: number): Observable<Object> {

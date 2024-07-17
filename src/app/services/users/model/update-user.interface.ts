@@ -3,4 +3,5 @@ export interface UpdateUserResponse {
   name: string;
   email: string;
   password: string;
+  roles: Array<number>;
 }

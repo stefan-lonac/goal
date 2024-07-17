@@ -58,13 +58,13 @@ export class LoginComponent implements OnInit {
   }
 
   protected login(): void {
-    this.loaderService.setLoading(true);
     if (this.loginForm.invalid) {
       return;
     }
 
     const { email, password } = this.loginForm.value;
 
+    this.loaderService.setLoading(true);
     this.authService
       .login({ email, password })
       .pipe(

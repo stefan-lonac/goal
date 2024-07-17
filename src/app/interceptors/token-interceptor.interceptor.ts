@@ -42,11 +42,7 @@ export class TokenInterceptor implements HttpInterceptor {
 
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (
-          error.status === 401 &&
-          !request.url.includes('Login/login') &&
-          !request.url.includes('Login/refresh')
-        ) {
+        if (error.status === 401 && !request.url.includes('Login/login')) {
           return this.handle401Error(request, next);
         }
 

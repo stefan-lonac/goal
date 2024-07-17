@@ -59,6 +59,8 @@ export class RegistrationComponent implements OnInit {
   }
 
   protected registration(): void {
+    this.loaderService.setLoading(true);
+
     if (this.registrationForm.invalid) {
       return;
     }
@@ -69,12 +71,10 @@ export class RegistrationComponent implements OnInit {
       roles: [1],
       ...this.registrationForm.value,
     };
-    this.loaderService.setLoading(true);
 
     this.authService
       .registration(registrationData)
       .pipe(
-        finalize(() => this.loaderService.setLoading(false)),
         tap({
           next: () => console.log('[next] Called'),
           error: (response) =>
@@ -82,6 +82,9 @@ export class RegistrationComponent implements OnInit {
               duration: 3000,
             }),
           complete: () => this.router.navigate([`${this.appRoutes.Login}`]),
+        }),
+        finalize(() => {
+          return this.loaderService.setLoading(false);
         }),
       )
       .subscribe();

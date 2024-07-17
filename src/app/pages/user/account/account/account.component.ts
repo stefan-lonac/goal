@@ -44,15 +44,13 @@ export class AccountComponent implements OnInit {
   private usersService = inject(UsersService);
   private loaderService = inject(LoaderService);
   protected userDataResponse!: UsersResponse;
-  protected currentUser$ = this.usersService.currentUser$;
+  // protected currentUser$ = this.usersService.currentUser$;
 
   protected profileForm!: FormGroup;
   protected editMode!: boolean;
 
   protected userData$: Observable<UsersResponse | null> =
-    this.currentUser$.pipe(
-      finalize(() => this.loaderService.setLoading(false)),
-    );
+    this.usersService.currentUser$;
 
   ngOnInit() {
     this.profileForm = this.formBuilder.group({
@@ -88,6 +86,7 @@ export class AccountComponent implements OnInit {
       roles: [1],
     };
 
+    this.loaderService.setLoading(true);
     this.usersService
       .updateCurrentUser(updateUserData)
       .pipe(
@@ -95,7 +94,7 @@ export class AccountComponent implements OnInit {
           this.onFormChange(true);
           this.cancelEdit();
         }),
-        switchMap(() => this.userData$),
+        finalize(() => this.loaderService.setLoading(false)),
       )
       .subscribe();
   }

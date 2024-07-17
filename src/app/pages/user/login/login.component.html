@@ -1,55 +1,59 @@
-<div class="login box-shadow">
-  <h1>{{ "common.button.login" | transloco }}</h1>
-  <form class="login-form" [formGroup]="loginForm" (ngSubmit)="login()">
-    <mat-form-field>
-      <mat-label>{{ "common.email" | transloco }}</mat-label>
-      <input
-        matInput
-        type="email"
-        placeholder="Enter your email"
-        formControlName="email"
-      />
+<ng-container
+  *ngIf="loaderService.loading$ | async as loading; else loginTemplate"
+>
+  <mat-spinner *ngIf="loading"></mat-spinner>
+</ng-container>
 
-      <mat-error *ngIf="loginForm.get('email')!.hasError('required')">
-        {{ "common.required.email" | transloco }}
-      </mat-error>
+<ng-template #loginTemplate>
+  <div class="login box-shadow">
+    <h1>{{ "common.button.login" | transloco }}</h1>
+    <form class="login-form" [formGroup]="loginForm" (ngSubmit)="login()">
+      <mat-form-field>
+        <mat-label>{{ "common.email" | transloco }}</mat-label>
+        <input
+          matInput
+          type="email"
+          placeholder="Enter your email"
+          formControlName="email"
+        />
 
-      <mat-error *ngIf="loginForm.get('email')!.hasError('email')">
-        {{ "common.validation.notValidEmail" | transloco }}
-      </mat-error>
-    </mat-form-field>
+        <mat-error *ngIf="loginForm.get('email')!.hasError('required')">
+          {{ "common.required.email" | transloco }}
+        </mat-error>
 
-    <mat-form-field>
-      <mat-label>{{ "common.password" | transloco }}</mat-label>
-      <input
-        matInput
-        type="password"
-        placeholder="Enter your password"
-        formControlName="password"
-      />
+        <mat-error *ngIf="loginForm.get('email')!.hasError('email')">
+          {{ "common.validation.notValidEmail" | transloco }}
+        </mat-error>
+      </mat-form-field>
 
-      <mat-error *ngIf="loginForm.get('password')!.hasError('required')">
-        {{ "common.required.password" | transloco }}
-      </mat-error>
-    </mat-form-field>
+      <mat-form-field>
+        <mat-label>{{ "common.password" | transloco }}</mat-label>
+        <input
+          matInput
+          type="password"
+          placeholder="Enter your password"
+          formControlName="password"
+        />
 
-    <button
-      class="app-button"
-      mat-button
-      mat-stroked-button
-      color="primary"
-      type="submit"
-      [disabled]="loginForm.invalid"
-    >
-      {{ "common.button.login" | transloco }}
-    </button>
-  </form>
+        <mat-error *ngIf="loginForm.get('password')!.hasError('required')">
+          {{ "common.required.password" | transloco }}
+        </mat-error>
+      </mat-form-field>
 
-  <a [routerLink]="'/' + appRoutes.Registration">{{
-    "registration.title" | transloco
-  }}</a>
+      <button
+        class="app-button"
+        mat-button
+        mat-stroked-button
+        color="primary"
+        type="submit"
+        [disabled]="loginForm.invalid"
+      >
+        {{ "common.button.login" | transloco }}
+      </button>
+    </form>
 
-  <ng-template *ngIf="loaderService.loading$ | async">
-    <mat-spinner></mat-spinner>
-  </ng-template>
-</div>
+    <a [routerLink]="'/' + appRoutes.Registration">{{
+      "registration.title" | transloco
+    }}</a>
+  </div>
+</ng-template>
